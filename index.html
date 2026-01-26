@@ -32,7 +32,7 @@
       #navbar {
         position: sticky;
         top: 0;
-        z-index: 200;
+        z-index: 9999;
         height: 56px;
         background: #ffffffcc;
         backdrop-filter: blur(10px);
@@ -170,6 +170,7 @@
         background: white;
         z-index: 100;
         padding: 16px;
+        margin-top: 60px;
       }
   
       #editorSubject {
@@ -256,6 +257,37 @@
         max-width: 100%;
         height: auto;
         border-radius: 8px;
+      }
+
+      /* ===== Saving Overlay ===== */
+      #savingOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1000;
+        color: white;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(4px);
+      }
+
+      #savingOverlay::after {
+        content: "🐄";
+        margin-left: 8px;
+        animation: moo 0.8s infinite alternate;
+      }
+
+      @keyframes moo {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-6px);
+        }
       }
     </style>
   </head>
