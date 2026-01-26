@@ -292,10 +292,26 @@
         }
       }
 
+      /* 기존 media query 삭제 또는 주석 */
       @media (max-width: 480px) {
         #body-rapper {
-            transform: scale(0.85);
+          transform: none !important;  /* scale(0.85) 제거 → 레이아웃 안정 */
         }
+        
+        #editorView {
+          padding-bottom: 400px;       /* 키보드 올라올 때 여유 공간 확보 */
+          box-sizing: border-box;
+        }
+        
+        #editorText {
+          min-height: 40vh;            /* 너무 작아지지 않게 */
+        }
+      }
+
+      /* 추가: focus 시 시각적 피드백 */
+      #editorText:focus {
+        outline: 2px solid #317EFB;
+        box-shadow: 0 0 0 4px rgba(49, 126, 251, 0.2);
       }
     </style>
   </head>
@@ -509,8 +525,8 @@
     async function saveAndClose() {
       if (state.activeMemoIndex !== null) {
         const memo = state.memos[state.activeMemoIndex];
-        memo.subject = editorSubject.value;
-        memo.text = editorText.innerHTML;
+        memo.subject = editorSubject.value.trim();
+        memo.text = editorText.innerHTML.trim();
       }
 
       editorView.style.display = "none";
