@@ -347,7 +347,7 @@
     </div>
     
     <!-- Saving -->
-    <div id="savingOverlay">🐄 Saving... 🐄</div>
+    <div id="savingOverlay">Saving... </div>
 
     <script>
       let autoSaveTimer = null;
@@ -439,12 +439,12 @@
       ========================= */
       document.getElementById("deleteMemoBtn").onclick = () => {
         if (state.activeMemoIndex !== null) {
-          if (confirm("🐄 정말 삭제할까요? 🐄")) {
+          if (confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) {
             state.memos.splice(state.activeMemoIndex, 1);
             state.activeMemoIndex = null;
             editorView.style.display = "none";
             renderList();
-            saveAndClose(); // ✅ 삭제 후 서버 반영
+            saveAndClose();
           }
         }
       };
