@@ -10,7 +10,7 @@
   <link rel="shortcut icon" href="favicon.ico?v=2">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>🐄Memooooo🐄</title>
   <style>
       body {
@@ -233,11 +233,13 @@
       #editorText {
         width: 99%;
         height: calc(100vh - 300px);
-        font-size: 15px;
         padding: 8px;
         border-radius: 8px;
         border: 1px solid #ccc;
         overflow-y: auto;
+        touch-action: manipulation;   /* 터치 지연/줌 방지 */
+        -webkit-text-size-adjust: 100%;  /* iOS 텍스트 크기 자동 조정 막기 */
+        font-size: 15px !important;
       }
   
       #editorText:focus {
@@ -258,7 +260,7 @@
   
       /* 카드 이미지 크기 제한 */
       .memo-text img, #editorText img {
-        max-width: 100%;
+        max-width: 80%;
         height: auto;
         border-radius: 8px;
       }
@@ -297,11 +299,11 @@
       /* 기존 media query 삭제 또는 주석 */
       @media (max-width: 480px) {
         #body-rapper {
-          transform: none !important;  /* scale(0.85) 제거 → 레이아웃 안정 */
+          transform: none !important;  
         }
         
         #editorView {
-          padding-bottom: 400px;       /* 키보드 올라올 때 여유 공간 확보 */
+          padding-bottom: 500px;       /* 키보드 올라올 때 여유 공간 확보 */
           box-sizing: border-box;
         }
         
@@ -314,6 +316,13 @@
       #editorText:focus {
         outline: 2px solid #317EFB;
         box-shadow: 0 0 0 4px rgba(49, 126, 251, 0.2);
+      }
+
+      /* 포커스 시 확대 방지 (iOS용) */
+      @media screen and (max-device-width: 1024px) {
+        #editorText:focus {
+          font-size: 16px;
+        }
       }
     </style>
   </head>
