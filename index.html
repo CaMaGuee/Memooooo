@@ -100,20 +100,22 @@
         display: block;
         padding: 20px;
         column-count: 4;
-        column-gap: 20px;
+        column-gap: 10px;     /* ← 기존 20px → 10px 또는 8px로 줄이기 (기본값이 크면 마진처럼 보임) */
       }
-  
-      @media (max-width: 1200px) { #listView { column-count: 4; } }
-      @media (max-width: 800px) { #listView { column-count: 3; } }
-      @media (max-width: 500px) { #listView { column-count: 2; } }
+
+      @media (max-width: 1200px) { #listView { column-count: 3; column-gap: 12px; } }
+      @media (max-width: 800px)  { #listView { column-count: 2; column-gap: 10px; } }
   
       .memo-card {
         background: #ffffff;
         border-radius: 16px;
         padding: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 12px;   /* ← 20px → 12px 또는 10px로 줄이기 */
+        margin-left: 0;        /* 좌우 여백 제거 (필요 시) */
+        margin-right: 0;
         break-inside: avoid;
         cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* hover 없이도 살짝 그림자 */
       }
   
       .memo-card:hover {
