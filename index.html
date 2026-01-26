@@ -186,7 +186,13 @@
   ========================= */
   async function loadMemos() {
     try {
-      const res = await fetch(`${API_BASE}/load?userId=${encodeURIComponent(state.userId)}`);
+      const res = await fetch(`${API_BASE}/load?userId=${encodeURIComponent(state.userId)}`,
+        {
+          method: "GET",
+          mode: "cors",
+          credentials: "omit"
+        }
+      );
       const data = await res.json();
       state.memos = data.Memooooo || [];
       renderList();
