@@ -604,6 +604,12 @@
       document.getElementById("installBtn").style.display = "block";
     });
 
+    if(isStandalone()){
+        document.getElementById("installBtn").style.display = "none";
+    } else {
+        document.getElementById("installBtn").style.display = "block";
+    }
+
     /* =========================
       Install Button Click
     ========================= */
