@@ -549,17 +549,36 @@
         });
 
         if (!res.ok) {
-          const text = await res.text();
-          console.error("저장 실패:", text);
-          alert("저장 실패: " + text);
+          let errorText = "";
+          try {
+            errorText = await res.text();
+          } catch {
+            errorText = "(서버에서 응답 본문을 읽을 수 없음)";
+          }
+
+          alert(
+            `저장 중 오류 발생 🐄\n\n` +
+            `HTTP 상태: ${res.status} ${res.statusText}\n` +
+            `서버 응답: ${errorText}\n\n` +
+            `(자세한 내용은 콘솔(F12)도 확인해주세요)`
+          );
+        } else {
+          // 성공하면 아무 alert 안 뜸
         }
+
+        overlay.style.display = "none";
+
       } catch (err) {
-        console.error("저장 중 에러:", err);
-        alert("저장 중 오류 발생");
+        alert(
+          `저장 중 오류 발생 🐄\n\n` +
+          `오류 종류: ${err.name || 'Unknown Error'}\n` +
+          `메시지: ${err.message}\n\n` +
+          `(네트워크 문제거나 서버가 응답하지 않을 때 자주 나와요)`
+        );
+        console.error("저장 실패 상세:", err);
+        overlay.style.display = "none";
       } finally {
         if (autoSaveTimer) clearTimeout(autoSaveTimer);
-        
-        overlay.style.display = "none";
       }
     }
 
