@@ -18,6 +18,74 @@
         font-family: "Noto Sans KR", sans-serif;
         background: linear-gradient(135deg, #f0f2f5, #e0e6f0);
       }
+
+      #downloadicon {
+        transform: rotate(90deg);
+      }
+      /* ===== Navigation Bar ===== */
+      #navbar {
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        height: 56px;
+        background: #ffffffcc;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+      }
+
+      #navTitle {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      #installBtn {
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        background: #317EFB;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      #installBtn:hover {
+        background: #255fd6;
+      }
+
+      /* ===== iOS Install Guide ===== */
+      #iosInstallGuide {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 999;
+        justify-content: center;
+        align-items: flex-end;
+      }
+
+      .ios-box {
+        width: 100%;
+        background: white;
+        border-radius: 16px 16px 0 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .ios-box p {
+        font-size: 14px;
+        margin: 12px 0;
+      }
+
+      #closeIosGuide {
+        border: none;
+        background: #ddd;
+        padding: 6px 14px;
+        border-radius: 8px;
+      }
   
       /* ===== Masonry ===== */
       #listView {
@@ -187,236 +255,297 @@
   </head>
   
   <body>
-  
-  <!-- Login -->
-  <div id="loginView">
-    <div id="g_id_onload"
-      data-client_id="765077747854-o62lf714ob2ncr2sq0l68ies31hp6p43.apps.googleusercontent.com"
-      data-callback="handleLogin"
-      data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin"></div>
-  </div>
-  
-  <!-- List -->
-  <div id="listView"></div>
-  <button id="addBtn">+</button>
-
-  <!-- Editor -->
-  <div id="editorView">
-    <button id="closeEditor">닫기</button>
-    <input id="editorSubject" placeholder="🐄 제목 🐄">
-
-    <!-- 이미지 버튼 + 삭제 버튼 -->
-    <div id="editorButtons">
-      <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
-      <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
-      <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+    <!-- Login -->
+    <div id="loginView">
+      <div id="g_id_onload"
+        data-client_id="765077747854-o62lf714ob2ncr2sq0l68ies31hp6p43.apps.googleusercontent.com"
+        data-callback="handleLogin"
+        data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"></div>
     </div>
 
-    <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
-    <input type="file" id="imageInput" style="display:none" accept="image/*">
-  </div>
-  
-  <!-- Saving -->
-  <div id="savingOverlay">🐄 Saving... 🐄</div>
+    <div id="navbar">
+        <div id="navTitle">🐄 Memooooooooooooooo</div>
+        <button id="installBtn"><div id="downloadicon">➜]</div> 설치</button>
+    </div>
 
-  <script>
-    const listView = document.getElementById("listView");
-    const editorView = document.getElementById("editorView");
-    const editorSubject = document.getElementById("editorSubject");
-    const editorText = document.getElementById("editorText");
-    const imageInput = document.getElementById("imageInput");
+    <!-- iOS Install Guide -->
+    <div id="iosInstallGuide">
+      <div class="ios-box">
+        <strong>📲 홈 화면에 추가하기</strong>
+        <p>
+          Safari 하단의 <b>공유 버튼</b> →<br>
+          <b>“홈 화면에 추가”</b>를 눌러주세요 🐄
+        </p>
+        <button id="closeIosGuide">닫기</button>
+      </div>
+    </div>
+    
+    <!-- List -->
+    <div id="listView"></div>
+    <button id="addBtn">+</button>
 
-    /* =========================
-        Render Masonry
-    ========================= */
-    function renderList() {
-      listView.innerHTML = "";
-      state.memos.forEach((memo, i) => {
-        const div = document.createElement("div");
-        div.className = "memo-card";
-        div.innerHTML = `
-          <div class="memo-subject">🐄 ${memo.subject}</div>
-          <div class="memo-text">${memo.text}</div>
-        `;
-        div.onclick = () => openEditor(i);
-        listView.appendChild(div);
-      });
-    }
+    <!-- Editor -->
+    <div id="editorView">
+      <button id="closeEditor">닫기</button>
+      <input id="editorSubject" placeholder="🐄 제목 🐄">
 
-    /* =========================
-        Editor 열기
-    ========================= */
-    function openEditor(index) {
-      state.activeMemoIndex = index;
-      const memo = state.memos[index];
-      editorSubject.value = memo.subject;
-      editorText.innerHTML = memo.text;
-      editorView.style.display = "block";
-    }
+      <!-- 이미지 버튼 + 삭제 버튼 -->
+      <div id="editorButtons">
+        <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
+        <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
+        <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+      </div>
 
-    /* =========================
-        새 메모 생성
-    ========================= */
-    document.getElementById("addBtn").onclick = () => {
-      state.memos.unshift({
-        subject: "",
-        date: new Date().toISOString(),
-        text: ""
-      });
-      openEditor(0);
-    };
+      <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
+      <input type="file" id="imageInput" style="display:none" accept="image/*">
+    </div>
+    
+    <!-- Saving -->
+    <div id="savingOverlay">🐄 Saving... 🐄</div>
 
-    /* =========================
-        에디터 닫기 & 저장
-    ========================= */
-    document.getElementById("closeEditor").onclick = () => {
-      saveAndClose();
-    };
+    <script>
+      const listView = document.getElementById("listView");
+      const editorView = document.getElementById("editorView");
+      const editorSubject = document.getElementById("editorSubject");
+      const editorText = document.getElementById("editorText");
+      const imageInput = document.getElementById("imageInput");
 
-    /* =========================
-        이미지 업로드 (Base64)
-    ========================= */
-    document.getElementById("uploadImageBtn").onclick = () => imageInput.click();
-    imageInput.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
+      /* =========================
+          Render Masonry
+      ========================= */
+      function renderList() {
+        listView.innerHTML = "";
+        state.memos.forEach((memo, i) => {
+          const div = document.createElement("div");
+          div.className = "memo-card";
+          div.innerHTML = `
+            <div class="memo-subject">🐄 ${memo.subject}</div>
+            <div class="memo-text">${memo.text}</div>
+          `;
+          div.onclick = () => openEditor(i);
+          listView.appendChild(div);
+        });
+      }
+
+      /* =========================
+          Editor 열기
+      ========================= */
+      function openEditor(index) {
+        state.activeMemoIndex = index;
+        const memo = state.memos[index];
+        editorSubject.value = memo.subject;
+        editorText.innerHTML = memo.text;
+        editorView.style.display = "block";
+      }
+
+      /* =========================
+          새 메모 생성
+      ========================= */
+      document.getElementById("addBtn").onclick = () => {
+        state.memos.unshift({
+          subject: "",
+          date: new Date().toISOString(),
+          text: ""
+        });
+        openEditor(0);
+      };
+
+      /* =========================
+          에디터 닫기 & 저장
+      ========================= */
+      document.getElementById("closeEditor").onclick = () => {
+        saveAndClose();
+      };
+
+      /* =========================
+          이미지 업로드 (Base64)
+      ========================= */
+      document.getElementById("uploadImageBtn").onclick = () => imageInput.click();
+      imageInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const img = document.createElement("img");
+            img.src = evt.target.result; // Base64
+            editorText.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      /* =========================
+          URL로 이미지 추가
+      ========================= */
+      document.getElementById("urlImageBtn").onclick = () => {
+        const url = prompt("🐄 이미지 URL을 입력하세요:");
+        if (url) {
           const img = document.createElement("img");
-          img.src = evt.target.result; // Base64
+          img.src = url;
           editorText.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-
-    /* =========================
-        URL로 이미지 추가
-    ========================= */
-    document.getElementById("urlImageBtn").onclick = () => {
-      const url = prompt("🐄 이미지 URL을 입력하세요:");
-      if (url) {
-        const img = document.createElement("img");
-        img.src = url;
-        editorText.appendChild(img);
-      }
-    };
-
-    /* =========================
-        메모 삭제
-    ========================= */
-    document.getElementById("deleteMemoBtn").onclick = () => {
-      if (state.activeMemoIndex !== null) {
-        if (confirm("🐄 정말 삭제할까요? 🐄")) {
-          state.memos.splice(state.activeMemoIndex, 1);
-          state.activeMemoIndex = null;
-          editorView.style.display = "none";
-          renderList();
-          saveAndClose(); // ✅ 삭제 후 서버 반영
         }
-      }
-    };
+      };
 
-    /* 초기 렌더링 */
-    renderList();
-  </script>
-  
-  <script>
-  /* =========================
-     State
-  ========================= */
-  const state = {
-    userId: null,
-    memos: [],
-    activeMemoIndex: null,
-  };
-  
-  const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
-  
-  /* =========================
-     Login
-  ========================= */
-  function handleLogin(res) {
-    const payload = JSON.parse(atob(res.credential.split(".")[1]));
-    state.userId = payload.email;
-  
-    document.getElementById("loginView").style.display = "none";
-    listView.style.display = "block";
-  
-    loadMemos();
-  }
-  
-  /* =========================
-     Load
-  ========================= */
-  async function loadMemos() {
-    try {
-      const res = await fetch(`${API_BASE}/load?userId=${encodeURIComponent(state.userId)}`,
-        {
-          method: "GET",
-          mode: "cors",
-          credentials: "omit"
+      /* =========================
+          메모 삭제
+      ========================= */
+      document.getElementById("deleteMemoBtn").onclick = () => {
+        if (state.activeMemoIndex !== null) {
+          if (confirm("🐄 정말 삭제할까요? 🐄")) {
+            state.memos.splice(state.activeMemoIndex, 1);
+            state.activeMemoIndex = null;
+            editorView.style.display = "none";
+            renderList();
+            saveAndClose(); // ✅ 삭제 후 서버 반영
+          }
         }
-      );
-      const data = await res.json();
-      state.memos = data.Memooooo || [];
+      };
+
+      /* 초기 렌더링 */
       renderList();
-    } catch (err) {
-      console.error("로드 실패:", err);
-      alert("메모를 불러오지 못했습니다.");
+    </script>
+    
+    <script>
+    /* =========================
+      State
+    ========================= */
+    const state = {
+      userId: null,
+      memos: [],
+      activeMemoIndex: null,
+    };
+    
+    const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
+    
+    /* =========================
+      Login
+    ========================= */
+    function handleLogin(res) {
+      const payload = JSON.parse(atob(res.credential.split(".")[1]));
+      state.userId = payload.email;
+    
+      document.getElementById("loginView").style.display = "none";
+      listView.style.display = "block";
+    
+      loadMemos();
     }
-  }
-  
-  /* =========================
-     Save
-  ========================= */
-  async function saveAndClose() {
-    if (state.activeMemoIndex !== null) {
-      const memo = state.memos[state.activeMemoIndex];
-      memo.subject = editorSubject.value;
-      memo.text = editorText.innerHTML;
-    }
-
-    editorView.style.display = "none";
-    renderList();
-
-    const overlay = document.getElementById("savingOverlay");
-    overlay.style.display = "flex";
-
-    try {
-      const res = await fetch(`${API_BASE}/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: state.userId,
-          Memooooo: state.memos
-        })
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("저장 실패:", text);
-        alert("저장 실패: " + text);
+    
+    /* =========================
+      Load
+    ========================= */
+    async function loadMemos() {
+      try {
+        const res = await fetch(`${API_BASE}/load?userId=${encodeURIComponent(state.userId)}`,
+          {
+            method: "GET",
+            mode: "cors",
+            credentials: "omit"
+          }
+        );
+        const data = await res.json();
+        state.memos = data.Memooooo || [];
+        renderList();
+      } catch (err) {
+        console.error("로드 실패:", err);
+        alert("메모를 불러오지 못했습니다.");
       }
-    } catch (err) {
-      console.error("저장 중 에러:", err);
-      alert("저장 중 오류 발생");
-    } finally {
-      overlay.style.display = "none";
     }
-  }
-  
-  /* Ctrl / Cmd + S 저장 */
-  window.addEventListener("keydown", e => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    
+    /* =========================
+      Save
+    ========================= */
+    async function saveAndClose() {
+      if (state.activeMemoIndex !== null) {
+        const memo = state.memos[state.activeMemoIndex];
+        memo.subject = editorSubject.value;
+        memo.text = editorText.innerHTML;
+      }
+
+      editorView.style.display = "none";
+      renderList();
+
+      const overlay = document.getElementById("savingOverlay");
+      overlay.style.display = "flex";
+
+      try {
+        const res = await fetch(`${API_BASE}/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: state.userId,
+            Memooooo: state.memos
+          })
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("저장 실패:", text);
+          alert("저장 실패: " + text);
+        }
+      } catch (err) {
+        console.error("저장 중 에러:", err);
+        alert("저장 중 오류 발생");
+      } finally {
+        overlay.style.display = "none";
+      }
+    }
+    
+    /* Ctrl / Cmd + S 저장 */
+    window.addEventListener("keydown", e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        saveAndClose();
+      }
+    });
+    </script>
+
+    <script>
+    let deferredPrompt = null;
+
+    /* =========================
+      PWA Install Detect
+    ========================= */
+    window.addEventListener("beforeinstallprompt", e => {
       e.preventDefault();
-      saveAndClose();
+      deferredPrompt = e;
+      document.getElementById("installBtn").style.display = "block";
+    });
+
+    /* =========================
+      Install Button Click
+    ========================= */
+    document.getElementById("installBtn").onclick = async () => {
+      // 설치 가능한 브라우저
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        return;
+      }
+
+      // iOS Safari
+      if (isIOS()) {
+        document.getElementById("iosInstallGuide").style.display = "flex";
+        return;
+      }
+
+      alert("이 환경에서는 설치를 지원하지 않습니다 🐄");
+    };
+
+    /* =========================
+      iOS Detect
+    ========================= */
+    function isIOS() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
     }
-  });
-  </script>
-  
+
+    document.getElementById("closeIosGuide").onclick = () => {
+      document.getElementById("iosInstallGuide").style.display = "none";
+    };
+
+    </script>
   </body>
-  </html>
+</html>
   
