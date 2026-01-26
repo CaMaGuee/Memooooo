@@ -536,8 +536,8 @@
     async function saveAndClose() {
       if (state.activeMemoIndex !== null) {
         const memo = state.memos[state.activeMemoIndex];
-        memo.subject = editorSubject.value.trim();
-        memo.text = editorText.innerHTML.trim();
+        memo.subject = editorSubject.value;
+        memo.text = editorText.innerHTML;
       }
 
       editorView.style.display = "none";
@@ -545,7 +545,7 @@
 
       const overlay = document.getElementById("savingOverlay");
       overlay.style.display = "flex";
-
+d
       try {
         const res = await fetch(`${API_BASE}/save`, {
           method: "POST",
