@@ -242,34 +242,42 @@
      Save
   ========================= */
   async function saveAndClose() {
-    if (state.activeMemoIndex !== null) {
-      const memo = state.memos[state.activeMemoIndex];
-      memo.subject = editorSubject.value;
-      memo.text = editorText.value;
-    }
-  
-    editorView.style.display = "none";
-    renderList();
-  
-    const overlay = document.getElementById("savingOverlay");
-    overlay.style.display = "flex";
-  
-    try {
-      await fetch(`${API_BASE}/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: state.userId,
-          Memooooo: state.memos
-        })
-      });
-    } catch (err) {
-      console.error("저장 실패:", err);
-      alert("저장 중 오류 발생");
-    } finally {
-      overlay.style.display = "none";
-    }
+  if (state.activeMemoIndex !== null) {
+    const memo = state.memos[state.activeMemoIndex];
+    memo.subject = editorSubject.value;
+    memo.text = editorText.value;
   }
+
+  editorView.style.display = "none";
+  renderList();
+
+  const overlay = document.getElementById("savingOverlay");
+  overlay.style.display = "flex";
+
+  try {
+    const res = await fetch(`${API_BASE}/save`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: state.userId,
+        Memooooo: state.memos
+      })
+    });
+
+    // 서버 상태 체크
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("저장 실패:", text);
+      alert("저장 실패: " + text);
+    }
+  } catch (err) {
+    console.error("저장 중 에러:", err);
+    alert("저장 중 오류 발생");
+  } finally {
+    // ✅ finally에서 반드시 숨김
+    overlay.style.display = "none";
+  }
+}
   
   /* Ctrl / Cmd + S 저장 */
   window.addEventListener("keydown", e => {
