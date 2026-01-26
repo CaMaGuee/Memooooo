@@ -344,6 +344,8 @@
     <div id="savingOverlay">🐄 Saving... 🐄</div>
 
     <script>
+      let autoSaveTimer = null;
+
       const listView = document.getElementById("listView");
       const editorView = document.getElementById("editorView");
       const editorSubject = document.getElementById("editorSubject");
@@ -526,9 +528,54 @@
         console.error("저장 중 에러:", err);
         alert("저장 중 오류 발생");
       } finally {
+        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+        
         overlay.style.display = "none";
       }
     }
+
+    /* =========================
+      Auto Save
+    ========================= */
+    async function autoSaveSilently() {
+      if (state.activeMemoIndex === null) return;
+      if (editorView.style.display !== "block") return;
+
+      const memo = state.memos[state.activeMemoIndex];
+      memo.subject = editorSubject.value;
+      memo.text = editorText.innerHTML;
+
+      try {
+        await fetch(`${API_BASE}/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: state.userId,
+            Memooooo: state.memos
+          })
+        });
+        console.log("🐄 auto-saved");
+      } catch (err) {
+        console.error("자동 저장 실패:", err);
+      }
+    }
+
+    // 입력 감지
+    function scheduleAutoSave() {
+      if (autoSaveTimer) clearTimeout(autoSaveTimer);
+
+      autoSaveTimer = setTimeout(() => {
+        autoSaveSilently();
+      }, 5000); // 5초간 입력 없으면
+    }
+
+    // 제목 입력
+    editorSubject.addEventListener("input", scheduleAutoSave);
+
+    // 본문 입력 (contenteditable)
+    editorText.addEventListener("input", scheduleAutoSave);
+
+
     
     /* Ctrl / Cmd + S 저장 */
     window.addEventListener("keydown", e => {
