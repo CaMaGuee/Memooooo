@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#317EFB">
+  <link rel="icon" type="image/png" href="favicon.png?v=2">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="favicon.png?v=2">
+  <link rel="shortcut icon" href="favicon.ico?v=2">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐄Memooooo🐄</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Noto Sans KR", sans-serif;
+        background: #f0f2f5;
+      }
+  
+      /* ===== Login ===== */
+      #loginView {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+  
+      /* ===== Masonry ===== */
+      #listView {
+        display: none;
+        padding: 16px;
+        column-count: 4;
+        column-gap: 16px;
+      }
+  
+      @media (max-width: 1200px) { #listView { column-count: 3; } }
+      @media (max-width: 800px)  { #listView { column-count: 2; } }
+      @media (max-width: 500px)  { #listView { column-count: 1; } }
+  
+      .memo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 16px;
+        break-inside: avoid;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,.08);
+      }
+  
+      .memo-subject {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+  
+      .memo-text {
+        font-size: 14px;
+        color: #444;
+        white-space: pre-wrap;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+      }
+  
+      /* ===== Floating Button ===== */
+      #addBtn {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        font-size: 32px;
+        border: none;
+        background: #317EFB;
+        color: white;
+        cursor: pointer;
+      }
+  
+      /* ===== Editor ===== */
+      #editorView {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: white;
+        z-index: 100;
+        padding: 16px;
+      }
+  
+      #editorSubject {
+        width: 100%;
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+  
+      #editorText {
+        width: 100%;
+        height: calc(100vh - 140px);
+        font-size: 15px;
+      }
+  
+      #closeEditor {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+      }
+  
+      /* ===== Saving Overlay ===== */
+      #savingOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 999;
+        color: white;
+        font-size: 20px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+      }
+    </style>
+  </head>
+  
+  <body>
+  
+  <!-- Login -->
+  <div id="loginView">
+    <div id="g_id_onload"
+      data-client_id="YOUR_GOOGLE_CLIENT_ID"
+      data-callback="handleLogin"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"></div>
+  </div>
+  
+  <!-- List -->
+  <div id="listView"></div>
+  <button id="addBtn">+</button>
+  
+  <!-- Editor -->
+  <div id="editorView">
+    <button id="closeEditor">닫기</button>
+    <input id="editorSubject" placeholder="제목">
+    <textarea id="editorText" placeholder="메모를 입력하세요 (HTML 가능)"></textarea>
+  </div>
+  
+  <!-- Saving -->
+  <div id="savingOverlay">저장 중...</div>
+  
+  <script>
+  /* =========================
+     State
+  ========================= */
+  const state = {
+    userId: null,
+    memos: [],
+    activeMemoIndex: null,
+  };
+  
+  const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
+  
+  /* =========================
+     DOM Elements
+  ========================= */
+  const listView = document.getElementById("listView");
+  const editorView = document.getElementById("editorView");
+  const editorSubject = document.getElementById("editorSubject");
+  const editorText = document.getElementById("editorText");
+  
+  /* =========================
+     Login
+  ========================= */
+  function handleLogin(res) {
+    const payload = JSON.parse(atob(res.credential.split(".")[1]));
+    state.userId = payload.email;
+  
+    document.getElementById("loginView").style.display = "none";
+    listView.style.display = "block";
+  
+    loadMemos();
+  }
+  
+  /* =========================
+     Load
+  ========================= */
+  async function loadMemos() {
+    try {
+      const res = await fetch(`${API_BASE}/load?userId=${encodeURIComponent(state.userId)}`);
+      const data = await res.json();
+      state.memos = data.Memooooo || [];
+      renderList();
+    } catch (err) {
+      console.error("로드 실패:", err);
+      alert("메모를 불러오지 못했습니다.");
+    }
+  }
+  
+  /* =========================
+     Render Masonry
+  ========================= */
+  function renderList() {
+    listView.innerHTML = "";
+    state.memos.forEach((memo, i) => {
+      const div = document.createElement("div");
+      div.className = "memo-card";
+      div.innerHTML = `
+        <div class="memo-subject">${memo.subject}</div>
+        <div class="memo-text">${memo.text}</div>
+      `;
+      div.onclick = () => openEditor(i);
+      listView.appendChild(div);
+    });
+  }
+  
+  /* =========================
+     Editor
+  ========================= */
+  function openEditor(index) {
+    state.activeMemoIndex = index;
+    const memo = state.memos[index];
+    editorSubject.value = memo.subject;
+    editorText.value = memo.text;
+    editorView.style.display = "block";
+  }
+  
+  /* 새 메모 */
+  document.getElementById("addBtn").onclick = () => {
+    state.memos.unshift({
+      subject: "",
+      date: new Date().toISOString(),
+      text: ""
+    });
+    openEditor(0);
+  };
+  
+  /* 닫기 버튼 */
+  document.getElementById("closeEditor").onclick = saveAndClose;
+  
+  /* =========================
+     Save
+  ========================= */
+  async function saveAndClose() {
+    if (state.activeMemoIndex !== null) {
+      const memo = state.memos[state.activeMemoIndex];
+      memo.subject = editorSubject.value;
+      memo.text = editorText.value;
+    }
+  
+    editorView.style.display = "none";
+    renderList();
+  
+    const overlay = document.getElementById("savingOverlay");
+    overlay.style.display = "flex";
+  
+    try {
+      await fetch(`${API_BASE}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: state.userId,
+          Memooooo: state.memos
+        })
+      });
+    } catch (err) {
+      console.error("저장 실패:", err);
+      alert("저장 중 오류 발생");
+    } finally {
+      overlay.style.display = "none";
+    }
+  }
+  
+  /* Ctrl / Cmd + S 저장 */
+  window.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+      e.preventDefault();
+      saveAndClose();
+    }
+  });
+  </script>
+  
+  </body>
+  </html>
+  
