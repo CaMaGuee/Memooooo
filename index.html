@@ -291,7 +291,7 @@
       }
 
       @media (max-width: 480px) {
-        body {
+        #body-rapper {
             transform: scale(0.85);
         }
       }
@@ -326,24 +326,26 @@
       </div>
     </div>
     
-    <!-- List -->
-    <div id="listView"></div>
-    <button id="addBtn">+</button>
+    <div id="body-rapper">
+      <!-- List -->
+      <div id="listView"></div>
+      <button id="addBtn">+</button>
 
-    <!-- Editor -->
-    <div id="editorView">
-      <button id="closeEditor">닫기</button>
-      <input id="editorSubject" placeholder="🐄 제목 🐄">
+      <!-- Editor -->
+      <div id="editorView">
+        <button id="closeEditor">닫기</button>
+        <input id="editorSubject" placeholder="🐄 제목 🐄">
 
-      <!-- 이미지 버튼 + 삭제 버튼 -->
-      <div id="editorButtons">
-        <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
-        <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
-        <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+        <!-- 이미지 버튼 + 삭제 버튼 -->
+        <div id="editorButtons">
+          <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
+          <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
+          <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+        </div>
+
+        <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
+        <input type="file" id="imageInput" style="display:none" accept="image/*">
       </div>
-
-      <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
-      <input type="file" id="imageInput" style="display:none" accept="image/*">
     </div>
     
     <!-- Saving -->
