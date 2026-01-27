@@ -531,6 +531,33 @@
   <div id="savingOverlay">🐄 Saving... </div>
 
   <script>
+    /* =========================
+      State
+    ========================= */
+    const state = {
+      userId: null,
+      memos: [],
+      activeMemoIndex: null,
+    };
+
+    const navbar = document.getElementById("navbar");
+
+    const sndMoo    = new Audio("mooooo.wav");
+    sndMoo.preload  = "auto";
+    
+    let audioUnlocked = false;
+    let autoSaveTimer = null;
+
+    const listView      = document.getElementById("listView");
+    const editorView    = document.getElementById("editorView");
+    const editorSubject = document.getElementById("editorSubject");
+    const editorText    = document.getElementById("editorText");
+    const imageInput    = document.getElementById("imageInput");
+
+
+  </script>
+
+  <script>
     async function hashSHA256(message) {
       const encoder = new TextEncoder();
       const data = encoder.encode(message);
@@ -545,8 +572,6 @@
     }
   </script>
   <script>
-    const navbar = document.getElementById("navbar");
-
     window.addEventListener("scroll", () => {
       if (window.scrollY > 8) {
         navbar.classList.add("scrolled");
@@ -556,14 +581,9 @@
     });
   </script>
   <script>
-    const sndMoo    = new Audio("mooooo.wav");
-    sndMoo.preload  = "auto";
-
     /* =========================
         사운드 재생
     ========================= */
-    let audioUnlocked = false;
-
     function playSound(audio) {
         if (!audioUnlocked) return;
 
@@ -583,14 +603,6 @@
     }, { once: true });
   </script>
   <script>
-    let autoSaveTimer = null;
-
-    const listView = document.getElementById("listView");
-    const editorView = document.getElementById("editorView");
-    const editorSubject = document.getElementById("editorSubject");
-    const editorText = document.getElementById("editorText");
-    const imageInput = document.getElementById("imageInput");
-
     /* =========================
         Render Masonry
     ========================= */
@@ -850,15 +862,6 @@
   </script>
 
   <script>
-    /* =========================
-      State
-    ========================= */
-    const state = {
-      userId: null,
-      memos: [],
-      activeMemoIndex: null,
-    };
-
     const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
 
     /* =========================
