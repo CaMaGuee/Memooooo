@@ -202,37 +202,26 @@
       Editor View
     ================================ */
     #editorView {
-      position: fixed;
+      display: flex;
+      flex-direction: column;  /* 제목/버튼 + 본문을 세로 배치 */
       top: 50%;
       left: 50%;
-
       transform: translate(-50%, -50%);
-
       width: min(720px, 92vw);
-      min-height: 720px;
       max-height: 90vh;
-
       background: #ffffff;
       border-radius: 5px;
       padding: 5px;
-
-      box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.18);
-
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
       z-index: 9999;
-
-      display: none;
-      overflow: hidden;
     }
-    
+
     @media (max-width: 600px) {
       #editorView {
         margin-top: 72px;
-
         width: 100vw;
-        height: calc(100vh - env(safe-area-inset-bottom));
+        height: calc(100vh - env(safe-area-inset-bottom) - 72px); /* 상단 navbar/헤더 제외 */
         max-height: none;
-
         border-radius: 0;
         padding-bottom: calc(12px + env(safe-area-inset-bottom));
       }
@@ -248,23 +237,20 @@
       background-color: #ffffff;
       padding: 10px 6px;
       margin-bottom: 12px;
+      flex-shrink: 0; /* 제목 영역 고정 */
     }
 
     #editorText {
-      flex: 1;
+      flex: 1; /* 나머지 공간 채우기 */
       width: 100%;
       border: none;
       outline: none;
-
       font-size: 16px;
       line-height: 1.6;
       padding: 8px 6px;
 
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      -webkit-overflow-scrolling: auto;
-      overscroll-behavior: contain;
-      scroll-behavior: smooth;
+      overflow-y: auto; /* 세로 스크롤 활성화 */
+      -webkit-overflow-scrolling: touch; /* iOS 스무스 스크롤 */
     }
 
     #editorText img,
@@ -281,6 +267,7 @@
       gap: 8px;
       margin-bottom: 10px;
       flex-wrap: wrap;
+      flex-shrink: 0; /* 버튼 영역 고정 */
     }
     
     .editor-btn,
@@ -294,9 +281,13 @@
     }
 
     #deleteMemoBtn {
+      align-self: flex-end;
       background: rgba(255, 59, 48, .12);
+      border: none;
+      font-size: 14px;
       color: #ff3b30;
-
+      padding: 4px 8px;
+      cursor: pointer;
       position: fixed;
       z-index: 10;
       bottom: 20px;
