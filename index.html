@@ -296,6 +296,11 @@
     #deleteMemoBtn {
       background: rgba(255, 59, 48, .12);
       color: #ff3b30;
+
+      position: fixed;
+      z-index: 10;
+      bottom: 20px;
+      left: 20px;
     }
 
     #closeEditor {
@@ -524,8 +529,8 @@
 
       <!-- 이미지 버튼 + 삭제 버튼 -->
       <div id="editorButtons">
-        <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
-        <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
+        <button class="editor-btn" id="uploadImageBtn" style="display:none;">이미지 🐄</button>
+        <button class="editor-btn" id="urlImageBtn" style="display:none;">URL 이미지 🐄</button>
         <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
       </div>
 
