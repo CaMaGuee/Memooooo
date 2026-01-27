@@ -261,6 +261,67 @@
     }
 
     /* ===============================
+      iOS Install Guide Overlay
+    ================================ */
+    #iosInstallGuide {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(10px);
+    }
+
+    #iosInstallGuide .ios-box {
+      width: min(320px, 90%);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 20px 18px;
+      text-align: center;
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+
+      animation: iosGuidePop .28s cubic-bezier(.2,.8,.2,1);
+    }
+
+    #iosInstallGuide strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    #iosInstallGuide p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+
+    #iosInstallGuide button {
+      border: none;
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, .08);
+    }
+
+    /* Pop Animation */
+    @keyframes iosGuidePop {
+      from {
+        transform: scale(0.96);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+
+    /* ===============================
       Dark Mode (Auto)
     ================================ */
     @media (prefers-color-scheme: dark) {
@@ -308,6 +369,16 @@
       #deleteMemoBtn {
         background: rgba(255, 59, 48, .2);
         color: #ff453a;
+      }
+
+      #iosInstallGuide .ios-box {
+        background: rgba(28, 28, 30, 0.95);
+        color: #f5f5f7;
+      }
+
+      #iosInstallGuide button {
+        background: rgba(255, 255, 255, .12);
+        color: #f5f5f7;
       }
     }
 
