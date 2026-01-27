@@ -201,6 +201,25 @@
     /* ===============================
       Editor View
     ================================ */
+    @media (min-width: 601px) {
+      #editorView {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @media (max-width: 600px) {
+      #editorView {
+        width: 100vw;
+        height: calc(100vh - env(safe-area-inset-bottom));
+        max-height: none;
+
+        border-radius: 0;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      }
+    }
+
     #editorView {
       display: none;
       position: fixed;
@@ -220,25 +239,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-    }
-
-    @media (min-width: 601px) {
-      #editorView {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-    }
-
-    @media (max-width: 600px) {
-      #editorView {
-        width: 100vw;
-        height: calc(100vh - env(safe-area-inset-bottom));
-        max-height: none;
-
-        border-radius: 0;
-        padding-bottom: calc(12px + env(safe-area-inset-bottom));
-      }
     }
 
     #editorSubject {
