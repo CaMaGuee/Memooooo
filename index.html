@@ -828,6 +828,7 @@
           throw new Error(await res.text());
         }
         console.log("🐄 auto-saved");
+        console.log(memo);
       } catch (err) {
         console.error("자동 저장 실패:", err);
       }
