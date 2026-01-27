@@ -13,522 +13,543 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>🐄Memooooo🐄</title>
   <style>
-      body {
-        margin: 0;
-        font-family: "Noto Sans KR", sans-serif;
-        background: linear-gradient(135deg, #f0f2f5, #e0e6f0);
-      }
+    #loginView {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      background-color: #ccc;
+      z-index: 99999;
+      position: relative;
+    }
 
-      #loginView {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width:100%;
-        height: 100vh;
-        background-color: #ccc;
-        z-index: 99999;
-        position: relative;
-      }
+    /* ===============================
+      Global Reset & iOS Fix
+    ================================ */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-      /* ===== Navigation Bar ===== */
-      #navbar {
-        position: sticky;
-        top: 0;
-        z-index: 9999;
-        height: 56px;
-        background: #ffffffcc;
-        backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,.1);
-      }
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
 
-      #navTitle {
-        font-size: 18px;
-        font-weight: 700;
-      }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: #f5f5f7;
+      color: #111;
+    }
 
-      #installBtn {
-        border: none;
-        border-radius: 20px;
-        padding: 6px 14px;
-        background: #317EFB;
-        color: white;
-        cursor: pointer;
-        font-size: 14px;
-      }
+    /* 입력 시 확대 방지 (iOS 핵심) */
+    input,
+    textarea,
+    [contenteditable] {
+      font-size: 16px !important;
+      touch-action: manipulation;
+    }
 
-      #installBtn:hover {
-        background: #255fd6;
-      }
+    /* ===============================
+      Navigation Bar
+    ================================ */
+    #navbar {
+      position: sticky;
+      top: 0;
+      height: 56px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-      /* ===== iOS Install Guide ===== */
-      #iosInstallGuide {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,.5);
-        z-index: 999;
-        justify-content: center;
-        align-items: flex-end;
-      }
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0, 0, 0, .06);
+      z-index: 9999;
+    }
 
-      .ios-box {
-        width: 100%;
-        background: white;
-        border-radius: 16px 16px 0 0;
-        padding: 20px;
-        text-align: center;
-      }
+    #navTitle {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
 
-      .ios-box p {
-        font-size: 14px;
-        margin: 12px 0;
-      }
+    #installBtn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 14px;
+      background: #317efb;
+      color: #fff;
+    }
 
-      #closeIosGuide {
-        border: none;
-        background: #ddd;
-        padding: 6px 14px;
-        border-radius: 8px;
-      }
-  
-      /* ===== Masonry ===== */
+    /* ===============================
+      Masonry Layout
+    ================================ */
+    #listView {
+      padding: 20px;
+      column-gap: 12px;
+      column-count: 5;
+    }
+
+    @media (max-width: 1200px) {
       #listView {
-        display: block;
-        padding: 20px;
         column-count: 4;
-        column-gap: 10px;     /* ← 기존 20px → 10px 또는 8px로 줄이기 (기본값이 크면 마진처럼 보임) */
       }
+    }
 
-      @media (max-width: 1200px) { #listView { column-count: 3; column-gap: 12px; } }
-      @media (max-width: 800px)  { #listView { column-count: 2; column-gap: 10px; } }
-  
-      .memo-card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 12px;   /* ← 20px → 12px 또는 10px로 줄이기 */
-        margin-left: 0;        /* 좌우 여백 제거 (필요 시) */
-        margin-right: 0;
-        break-inside: avoid;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);  /* hover 없이도 살짝 그림자 */
+    @media (max-width: 900px) {
+      #listView {
+        column-count: 3;
       }
-  
+    }
+
+    /* 모바일: 무조건 2열 */
+    @media (max-width: 600px) {
+      #listView {
+        column-count: 2;
+        padding: 14px;
+        column-gap: 10px;
+      }
+    }
+
+    /* ===============================
+      Memo Card (Apple Style)
+    ================================ */
+    .memo-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      break-inside: avoid;
+      cursor: pointer;
+
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, .04),
+        0 8px 24px rgba(0, 0, 0, .06);
+
+      transition:
+        transform .25s cubic-bezier(.2, .8, .2, 1),
+        box-shadow .25s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    /* Hover (Desktop) */
+    @media (hover: hover) {
       .memo-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow:
+          0 6px 16px rgba(0, 0, 0, .08),
+          0 20px 40px rgba(0, 0, 0, .12);
       }
-  
+    }
+
+    /* Click / Tap 확대 트랜지션 */
+    .memo-card:active {
+      transform: scale(0.97);
+    }
+
+    /* ===============================
+      Card Typography
+    ================================ */
+    .memo-subject {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #111;
+      margin-bottom: 8px;
+    }
+
+    .memo-text {
+      font-size: 14px;
+      line-height: 1.55;
+      color: #555;
+      letter-spacing: -0.01em;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ===============================
+      Floating Add Button
+    ================================ */
+    #addBtn {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+
+      background: rgba(49, 126, 251, .9);
+      color: #fff;
+      font-size: 22px;
+
+      box-shadow: 0 10px 24px rgba(49, 126, 251, .35);
+      transition: transform .2s ease;
+    }
+
+    #addBtn:hover {
+      transform: scale(1.08);
+    }
+
+    /* ===============================
+      Editor View
+    ================================ */
+    #editorView {
+      display: none;
+      background: #fff;
+      padding: 16px;
+    }
+
+    #editorSubject {
+      width: 100%;
+      font-size: 20px;
+      font-weight: 600;
+      border: none;
+      outline: none;
+      border-bottom: 1px solid #eee;
+      padding: 8px 4px;
+    }
+
+    #editorText {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      line-height: 1.6;
+      padding: 8px 4px;
+    }
+
+    #editorText img,
+    .memo-text img {
+      max-width: 100%;
+      border-radius: 12px;
+    }
+
+    /* ===============================
+      Buttons (iOS Style)
+    ================================ */
+    .editor-btn,
+    #closeEditor,
+    #deleteMemoBtn {
+      border: none;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, .06);
+      color: #111;
+    }
+
+    #deleteMemoBtn {
+      background: rgba(255, 59, 48, .12);
+      color: #ff3b30;
+    }
+
+    /* ===============================
+      Saving Overlay
+    ================================ */
+    #savingOverlay {
+      display: none;
+      background: rgba(0, 0, 0, .4);
+      backdrop-filter: blur(6px);
+    }
+
+    /* ===============================
+      Dark Mode (Auto)
+    ================================ */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #0f0f10;
+        color: #f5f5f7;
+      }
+
+      #navbar {
+        background: rgba(28, 28, 30, .75);
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+      }
+
+      .memo-card {
+        background: rgba(28, 28, 30, .9);
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, .6),
+          0 12px 28px rgba(0, 0, 0, .8);
+      }
+
       .memo-subject {
-        width:99%;
-        font-weight: 600;
-        font-size: 17px;
-        color: #333333;
-        margin-bottom: 10px;
+        color: #f5f5f7;
       }
-  
+
       .memo-text {
-        width:99%;
-        font-size: 15px;
-        color: #777777;
-        white-space: pre-wrap;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 5; /* 5줄 제한 */
-        -webkit-box-orient: vertical;
-        margin: 0 10px 0 10px;
+        color: #b0b0b5;
       }
-  
-      /* ===== Floating Button ===== */
-      #addBtn {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        font-size: 26px;
-        border: none;
-        background: #317EFB80;
-        color: white;
-        cursor: pointer;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-  
-      #addBtn:hover {
-        transform: scale(1.1) rotate(45deg);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
-        background: #317EFB;
-      }
-  
-      /* ===== Editor ===== */
+
       #editorView {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: white;
-        z-index: 100;
-        padding: 16px;
-        margin-top: 60px;
+        background: #1c1c1e;
       }
-  
-      #editorSubject {
-        width: 99%;
-        font-size: 20px;
-        margin-bottom: 8px;
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-      }
-  
-      #editorButtons {
-        margin-bottom: 12px;
-      }
-  
-      .editor-btn {
-        margin-right: 8px;
-        padding: 6px 12px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        color: white;
-      }
-  
-      #uploadImageBtn { background: #4CAF5090; }
-      #urlImageBtn { background: #2196F390; }
-      #deleteMemoBtn { 
-        position: fixed;
-        bottom: 12px;
-        left: 12px;
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        background: #555;
-        color: white;
-        cursor: pointer;
-        background: #f4433690;
-      }
-  
-      #uploadImageBtn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
-        background: #4CAF50;
-      }
-      #urlImageBtn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
-        background: #2196F3;
-      }
-      #deleteMemoBtn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
-        background: #f44336;
-      }
-  
+
+      #editorSubject,
       #editorText {
-        width: 99%;
-        height: calc(100vh - 300px);
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        overflow-y: auto;
-        touch-action: manipulation;   /* 터치 지연/줌 방지 */
-        -webkit-text-size-adjust: 100%;  /* iOS 텍스트 크기 자동 조정 막기 */
-        font-size: 15px !important;
+        color: #f5f5f7;
+        border-color: rgba(255, 255, 255, .1);
       }
-  
-      #editorText:focus {
-        outline: 2px solid #317EFB;
-      }
-  
+
+      .editor-btn,
       #closeEditor {
-        position: fixed;
-        bottom: 12px;
-        right: 12px;
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        background: #555;
-        color: white;
-        cursor: pointer;
-      }
-  
-      /* 카드 이미지 크기 제한 */
-      .memo-text img, #editorText img {
-        max-width: 80%;
-        height: auto;
-        border-radius: 8px;
+        background: rgba(255, 255, 255, .08);
+        color: #f5f5f7;
       }
 
-      /* ===== Saving Overlay ===== */
-      #savingOverlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        z-index: 1000;
-        color: white;
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(4px);
+      #deleteMemoBtn {
+        background: rgba(255, 59, 48, .2);
+        color: #ff453a;
       }
+    }
 
-      #savingOverlay::after {
-        content: "🐄";
-        margin-left: 8px;
-        animation: moo 0.3s infinite alternate;
-      }
+    /* ===============================
+      Navbar Scroll Enhancement
+    ================================ */
+    #navbar {
+      transition:
+        backdrop-filter .25s ease,
+        background-color .25s ease,
+        box-shadow .25s ease;
+    }
 
-      @keyframes moo {
-        from {
-          transform: translateY(0);
-        }
-        to {
-          transform: translateY(-6px);
-        }
-      }
+    /* 스크롤 시 */
+    #navbar.scrolled {
+      backdrop-filter: blur(22px);
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    }
 
-      /* 기존 media query 삭제 또는 주석 */
-      @media (max-width: 480px) {
-        #body-rapper {
-          transform: none !important;  
-        }
-        
-        #editorView {
-          padding-bottom: 500px;       /* 키보드 올라올 때 여유 공간 확보 */
-          box-sizing: border-box;
-        }
-        
-        #editorText {
-          min-height: 40vh;            /* 너무 작아지지 않게 */
-        }
+    /* 다크모드 */
+    @media (prefers-color-scheme: dark) {
+      #navbar.scrolled {
+        background: rgba(28, 28, 30, 0.88);
+        box-shadow: 0 6px 24px rgba(0,0,0,.6);
       }
+    }
+  </style>
+</head>
 
-      /* 추가: focus 시 시각적 피드백 */
-      #editorText:focus {
-        outline: 2px solid #317EFB;
-        box-shadow: 0 0 0 4px rgba(49, 126, 251, 0.2);
-      }
+<body>
+  <div id="navbar">
+    <div id="navTitle">🐄 Memooooooooooooooo</div>
+    <button id="installBtn">설치</button>
+  </div>
 
-      /* 포커스 시 확대 방지 (iOS용) */
-      @media screen and (max-device-width: 1024px) {
-        #editorText:focus {
-          font-size: 16px;
-        }
-      }
-    </style>
-  </head>
-  
-  <body>
-    <div id="navbar">
-        <div id="navTitle">🐄 Memooooooooooooooo</div>
-        <button id="installBtn">설치</button>
+  <!-- Login -->
+  <div id="loginView">
+    <div id="g_id_onload" data-client_id="765077747854-o62lf714ob2ncr2sq0l68ies31hp6p43.apps.googleusercontent.com"
+      data-callback="handleLogin" data-auto_prompt="false">
     </div>
+    <div class="g_id_signin"></div>
+  </div>
 
-    <!-- Login -->
-    <div id="loginView">
-      <div id="g_id_onload"
-        data-client_id="765077747854-o62lf714ob2ncr2sq0l68ies31hp6p43.apps.googleusercontent.com"
-        data-callback="handleLogin"
-        data-auto_prompt="false">
+  <!-- iOS Install Guide -->
+  <div id="iosInstallGuide">
+    <div class="ios-box">
+      <strong>📲 홈 화면에 추가하기</strong>
+      <p>
+        Safari 하단의 <b>공유 버튼</b> →<br>
+        <b>“홈 화면에 추가”</b>를 눌러주세요 🐄
+      </p>
+      <button id="closeIosGuide">닫기</button>
+    </div>
+  </div>
+
+  <div id="body-rapper">
+    <!-- List -->
+    <div id="listView"></div>
+
+    <!-- Editor -->
+    <div id="editorView">
+      <button id="closeEditor">닫기</button>
+      <input id="editorSubject" placeholder="🐄 제목 🐄">
+
+      <!-- 이미지 버튼 + 삭제 버튼 -->
+      <div id="editorButtons">
+        <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
+        <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
+        <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
       </div>
-      <div class="g_id_signin"></div>
+
+      <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
+      <input type="file" id="imageInput" style="display:none" accept="image/*">
     </div>
+  </div>
 
-    <!-- iOS Install Guide -->
-    <div id="iosInstallGuide">
-      <div class="ios-box">
-        <strong>📲 홈 화면에 추가하기</strong>
-        <p>
-          Safari 하단의 <b>공유 버튼</b> →<br>
-          <b>“홈 화면에 추가”</b>를 눌러주세요 🐄
-        </p>
-        <button id="closeIosGuide">닫기</button>
-      </div>
-    </div>
-    
-    <div id="body-rapper">
-      <!-- List -->
-      <div id="listView"></div>
+  <button id="addBtn">+</button>
 
-      <!-- Editor -->
-      <div id="editorView">
-        <button id="closeEditor">닫기</button>
-        <input id="editorSubject" placeholder="🐄 제목 🐄">
+  <!-- Saving -->
+  <div id="savingOverlay">Saving... </div>
 
-        <!-- 이미지 버튼 + 삭제 버튼 -->
-        <div id="editorButtons">
-          <button class="editor-btn" id="uploadImageBtn">이미지 🐄</button>
-          <button class="editor-btn" id="urlImageBtn">URL 이미지 🐄</button>
-          <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
-        </div>
+  <script>
+    async function hashSHA256(message) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(message);
 
-        <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
-        <input type="file" id="imageInput" style="display:none" accept="image/*">
-      </div>
-    </div>
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
 
-    <button id="addBtn">+</button>
-    
-    <!-- Saving -->
-    <div id="savingOverlay">Saving... </div>
+      return hashHex;
+    }
+  </script>
+  <script>
+    const navbar = document.getElementById("navbar");
 
-    <script>
-      async function hashSHA256(message) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(message);
-
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
-          .map(b => b.toString(16).padStart(2, "0"))
-          .join("");
-
-        return hashHex;
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 8) {
+        navbar.classList.add("scrolled");
+      } else {
+        navbar.classList.remove("scrolled");
       }
-    </script>
-    <script>
-      let autoSaveTimer = null;
+    });
+  </script>
+  <script>
+    let autoSaveTimer = null;
 
-      const listView = document.getElementById("listView");
-      const editorView = document.getElementById("editorView");
-      const editorSubject = document.getElementById("editorSubject");
-      const editorText = document.getElementById("editorText");
-      const imageInput = document.getElementById("imageInput");
+    const listView = document.getElementById("listView");
+    const editorView = document.getElementById("editorView");
+    const editorSubject = document.getElementById("editorSubject");
+    const editorText = document.getElementById("editorText");
+    const imageInput = document.getElementById("imageInput");
 
-      /* =========================
-          Render Masonry
-      ========================= */
-      function renderList() {
-        listView.innerHTML = "";
-        state.memos.forEach((memo, i) => {
-          const div = document.createElement("div");
-          div.className = "memo-card";
-          div.innerHTML = `
-            <div class="memo-subject">🐄 ${memo.subject}</div>
-            <div class="memo-text">${memo.text}</div>
-          `;
-          div.onclick = () => openEditor(i);
-          listView.appendChild(div);
-        });
-      }
+    /* =========================
+        Render Masonry
+    ========================= */
+    function renderList() {
+      listView.innerHTML = "";
+      state.memos.forEach((memo, i) => {
+        const div = document.createElement("div");
+        div.className = "memo-card";
+        div.innerHTML = `
+          <div class="memo-subject">🐄 ${memo.subject}</div>
+          <div class="memo-text">${memo.text}</div>
+        `;
+        div.onclick = () => openEditor(i);
+        listView.appendChild(div);
+      });
+    }
 
-      /* =========================
-          Editor 열기
-      ========================= */
-      function openEditor(index) {
-        state.activeMemoIndex = index;
-        const memo = state.memos[index];
-        editorSubject.value = memo.subject;
-        editorText.innerHTML = memo.text;
-        editorView.style.display = "block";
-      }
+    /* =========================
+        Editor 열기
+    ========================= */
+    function openEditor(index) {
+      state.activeMemoIndex = index;
+      const memo = state.memos[index];
+      editorSubject.value = memo.subject;
+      editorText.innerHTML = memo.text;
+      editorView.style.display = "block";
+    }
 
-      /* =========================
-          새 메모 생성
-      ========================= */
-      document.getElementById("addBtn").onclick = async () => {
-        const m_date = new Date().toISOString();
-        const m_hash = await hashSHA256(m_date);
+    /* =========================
+        새 메모 생성
+    ========================= */
+    document.getElementById("addBtn").onclick = async () => {
+      const m_date = new Date().toISOString();
+      const m_hash = await hashSHA256(m_date);
 
-        state.memos.unshift({
-          subject: "",
-          date: m_date,
-          text: "",
-          classification_code: m_hash,
-          del: 0
-        });
-        openEditor(0);
-      };
+      state.memos.unshift({
+        subject: "",
+        date: m_date,
+        text: "",
+        classification_code: m_hash,
+        del: 0
+      });
+      openEditor(0);
+    };
 
-      /* =========================
-          에디터 닫기 & 저장
-      ========================= */
-      document.getElementById("closeEditor").onclick = () => {
-        saveAndClose();
-      };
+    /* =========================
+        에디터 닫기 & 저장
+    ========================= */
+    document.getElementById("closeEditor").onclick = () => {
+      saveAndClose();
+    };
 
-      /* =========================
-          이미지 업로드 (Base64)
-      ========================= */
-      document.getElementById("uploadImageBtn").onclick = () => imageInput.click();
-      imageInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            const img = document.createElement("img");
-            img.src = evt.target.result; // Base64
-            editorText.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-
-      /* =========================
-          URL로 이미지 추가
-      ========================= */
-      document.getElementById("urlImageBtn").onclick = () => {
-        const url = prompt("🐄 이미지 URL을 입력하세요:");
-        if (url) {
+    /* =========================
+        이미지 업로드 (Base64)
+    ========================= */
+    document.getElementById("uploadImageBtn").onclick = () => imageInput.click();
+    imageInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
           const img = document.createElement("img");
-          img.src = url;
+          img.src = evt.target.result; // Base64
           editorText.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    /* =========================
+        URL로 이미지 추가
+    ========================= */
+    document.getElementById("urlImageBtn").onclick = () => {
+      const url = prompt("🐄 이미지 URL을 입력하세요:");
+      if (url) {
+        const img = document.createElement("img");
+        img.src = url;
+        editorText.appendChild(img);
+      }
+    };
+
+    /* =========================
+        메모 삭제
+    ========================= */
+    document.getElementById("deleteMemoBtn").onclick = async () => {
+      if (state.activeMemoIndex === null) return;
+
+      if (!confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) return;
+
+      const memo = state.memos[state.activeMemoIndex];
+
+      // 삭제 플래그
+      memo.del = 1;
+
+      try {
+        await fetch(`${API_BASE}/save`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: state.userId,
+            Memooooo: [memo]   // 메모 1건만 전송
+          })
+        });
+
+        // autoSave 초기화
+        if (autoSaveTimer) {
+          clearTimeout(autoSaveTimer);
+          autoSaveTimer = null;
         }
-      };
+      } catch (err) {
+        alert("삭제 실패 🐄\n" + err.message);
+        return;
+      }
 
-      /* =========================
-          메모 삭제
-      ========================= */
-      document.getElementById("deleteMemoBtn").onclick = async () => {
-        if (state.activeMemoIndex === null) return;
-
-        if (!confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) return;
-
-        const memo = state.memos[state.activeMemoIndex];
-
-        // 삭제 플래그
-        memo.del = 1;
-
-        try {
-          await fetch(`${API_BASE}/save`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId: state.userId,
-              Memooooo: [memo]   // 메모 1건만 전송
-            })
-          });
-
-          // autoSave 초기화
-          if (autoSaveTimer) {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = null;
-          }
-        } catch (err) {
-          alert("삭제 실패 🐄\n" + err.message);
-          return;
-        }
-
-        // 로컬 상태 정리
-        state.memos.splice(state.activeMemoIndex, 1);
-        state.activeMemoIndex = null;
-        editorView.style.display = "none";
-        renderList();
-      };
-
-      /* 초기 렌더링 */
+      // 로컬 상태 정리
+      state.memos.splice(state.activeMemoIndex, 1);
+      state.activeMemoIndex = null;
+      editorView.style.display = "none";
       renderList();
-    </script>
-    
-    <script>
+    };
+
+    /* 초기 렌더링 */
+    renderList();
+  </script>
+
+  <script>
     /* =========================
       State
     ========================= */
@@ -537,10 +558,8 @@
       memos: [],
       activeMemoIndex: null,
     };
-    
+
     const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
-    
-    let savingInProgress = false;
 
     /* =========================
       Login
@@ -548,13 +567,13 @@
     function handleLogin(res) {
       const payload = JSON.parse(atob(res.credential.split(".")[1]));
       state.userId = payload.email;
-    
+
       document.getElementById("loginView").style.display = "none";
       listView.style.display = "block";
-    
+
       loadMemos();
     }
-    
+
     /* =========================
       Load
     ========================= */
@@ -575,7 +594,7 @@
         alert("메모를 불러오지 못했습니다.");
       }
     }
-    
+
     /* =========================
       Save
     ========================= */
@@ -664,7 +683,7 @@
     editorText.addEventListener("input", scheduleAutoSave);
 
 
-    
+
     /* Ctrl / Cmd + S 저장 */
     window.addEventListener("keydown", e => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
@@ -672,9 +691,9 @@
         saveAndClose();
       }
     });
-    </script>
+  </script>
 
-    <script>
+  <script>
     let deferredPrompt = null;
 
     /* =========================
@@ -686,10 +705,10 @@
       document.getElementById("installBtn").style.display = "block";
     });
 
-    if(isStandalone()){
-        document.getElementById("installBtn").style.display = "none";
+    if (isStandalone()) {
+      document.getElementById("installBtn").style.display = "none";
     } else {
-        document.getElementById("installBtn").style.display = "block";
+      document.getElementById("installBtn").style.display = "block";
     }
 
     /* =========================
@@ -724,7 +743,7 @@
       document.getElementById("iosInstallGuide").style.display = "none";
     };
 
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
-  
