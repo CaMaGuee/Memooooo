@@ -792,12 +792,12 @@
         if (!res.ok) {
           throw new Error(await res.text());
         }
-        console.log(memo);
       } catch (err) {
         alert("저장 실패\n" + err.message);
         return;
       } finally {
         playSound(sndMoo);
+        console.log(memo);
         overlay.style.display = "none";
       }
     }
