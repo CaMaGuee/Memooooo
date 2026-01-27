@@ -860,6 +860,10 @@
   <script>
     let deferredPrompt = null;
 
+    function isStandalone(){
+        return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    }
+
     /* =========================
       PWA Install Detect
     ========================= */
