@@ -792,6 +792,7 @@
         if (!res.ok) {
           throw new Error(await res.text());
         }
+        console.log(memo);
       } catch (err) {
         alert("저장 실패\n" + err.message);
         return;
@@ -828,7 +829,6 @@
           throw new Error(await res.text());
         }
         console.log("🐄 auto-saved");
-        console.log(memo);
       } catch (err) {
         console.error("자동 저장 실패:", err);
       }
