@@ -381,6 +381,20 @@
     <div id="savingOverlay">Saving... </div>
 
     <script>
+      async function hashSHA256(message) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+          .map(b => b.toString(16).padStart(2, "0"))
+          .join("");
+
+        return hashHex;
+      }
+    </script>
+    <script>
       let autoSaveTimer = null;
 
       const listView = document.getElementById("listView");
@@ -420,11 +434,16 @@
       /* =========================
           새 메모 생성
       ========================= */
-      document.getElementById("addBtn").onclick = () => {
+      document.getElementById("addBtn").onclick = async () => {
+        const m_date = new Date().toISOString();
+        const m_hash = await hashSHA256(m_date);
+
         state.memos.unshift({
           subject: "",
-          date: new Date().toISOString(),
-          text: ""
+          date: m_date,
+          text: "",
+          classification_code: m_hash,
+          del: 0
         });
         openEditor(0);
       };
@@ -468,16 +487,41 @@
       /* =========================
           메모 삭제
       ========================= */
-      document.getElementById("deleteMemoBtn").onclick = () => {
-        if (state.activeMemoIndex !== null) {
-          if (confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) {
-            state.memos.splice(state.activeMemoIndex, 1);
-            state.activeMemoIndex = null;
-            editorView.style.display = "none";
-            renderList();
-            saveAndClose();
+      document.getElementById("deleteMemoBtn").onclick = async () => {
+        if (state.activeMemoIndex === null) return;
+
+        if (!confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) return;
+
+        const memo = state.memos[state.activeMemoIndex];
+
+        // 삭제 플래그
+        memo.del = 1;
+
+        try {
+          await fetch(`${API_BASE}/save`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: state.userId,
+              Memooooo: [memo]   // 메모 1건만 전송
+            })
+          });
+
+          // autoSave 초기화
+          if (autoSaveTimer) {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = null;
           }
+        } catch (err) {
+          alert("삭제 실패 🐄\n" + err.message);
+          return;
         }
+
+        // 로컬 상태 정리
+        state.memos.splice(state.activeMemoIndex, 1);
+        state.activeMemoIndex = null;
+        editorView.style.display = "none";
+        renderList();
       };
 
       /* 초기 렌더링 */
@@ -496,6 +540,8 @@
     
     const API_BASE = "https://memooooo-sheet-api.vercel.app/api";
     
+    let savingInProgress = false;
+
     /* =========================
       Login
     ========================= */
@@ -534,59 +580,38 @@
       Save
     ========================= */
     async function saveAndClose() {
-      if (state.activeMemoIndex !== null) {
-        const memo = state.memos[state.activeMemoIndex];
-        memo.subject = editorSubject.value;
-        memo.text = editorText.innerHTML;
-      }
+      if (state.activeMemoIndex === null) return;
+
+      const memo = state.memos[state.activeMemoIndex];
+
+      // 현재 에디터 내용 반영
+      memo.subject = editorSubject.value;
+      memo.text = editorText.innerHTML;
+      memo.del = 0;
 
       editorView.style.display = "none";
       renderList();
 
       const overlay = document.getElementById("savingOverlay");
       overlay.style.display = "flex";
-d
+
       try {
         const res = await fetch(`${API_BASE}/save`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: state.userId,
-            Memooooo: state.memos
+            Memooooo: [memo]
           })
         });
 
         if (!res.ok) {
-          let errorText = "";
-          try {
-            errorText = await res.text();
-          } catch {
-            errorText = "(서버에서 응답 본문을 읽을 수 없음)";
-          }
-
-          alert(
-            `저장 중 오류 발생 🐄\n\n` +
-            `HTTP 상태: ${res.status} ${res.statusText}\n` +
-            `서버 응답: ${errorText}\n\n` +
-            `(자세한 내용은 콘솔(F12)도 확인해주세요)`
-          );
-        } else {
-          // 성공하면 아무 alert 안 뜸
+          throw new Error(await res.text());
         }
-
-        overlay.style.display = "none";
-
       } catch (err) {
-        alert(
-          `저장 중 오류 발생 🐄\n\n` +
-          `오류 종류: ${err.name || 'Unknown Error'}\n` +
-          `메시지: ${err.message}\n\n` +
-          `(네트워크 문제거나 서버가 응답하지 않을 때 자주 나와요)`
-        );
-        console.error("저장 실패 상세:", err);
-        overlay.style.display = "none";
+        alert("저장 실패\n" + err.message);
       } finally {
-        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+        overlay.style.display = "none";
       }
     }
 
@@ -598,23 +623,30 @@ d
       if (editorView.style.display !== "block") return;
 
       const memo = state.memos[state.activeMemoIndex];
+
       memo.subject = editorSubject.value;
       memo.text = editorText.innerHTML;
+      memo.del = 0;
 
       try {
-        await fetch(`${API_BASE}/save`, {
+        const res = await fetch(`${API_BASE}/save`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: state.userId,
-            Memooooo: state.memos
+            Memooooo: [memo]
           })
         });
+
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
         console.log("🐄 auto-saved");
       } catch (err) {
         console.error("자동 저장 실패:", err);
       }
     }
+
 
     // 입력 감지
     function scheduleAutoSave() {
@@ -622,7 +654,7 @@ d
 
       autoSaveTimer = setTimeout(() => {
         autoSaveSilently();
-      }, 5000); // 5초간 입력 없으면
+      }, 10000); // 10초간 입력 없으면
     }
 
     // 제목 입력
