@@ -322,6 +322,18 @@
       backdrop-filter: blur(6px);
     }
 
+    #donottouch {
+      display: none;
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      left:0;
+      top:0;
+      background: #00000000;
+      color: #00000000;
+      z-index: 99999;
+    }
+
     /* ===============================
       iOS Install Guide Overlay
     ================================ */
@@ -522,6 +534,7 @@
   <button id="addBtn">+</button>
 
   <!-- Saving -->
+  <div id="donottouch"></div>
   <div id="savingOverlay">🐄 Saving... </div>
 
   <script>
@@ -687,6 +700,11 @@
 
       if (!confirm("🐄MeMooooo🐄ooooo🐄ooooo?!!?!?!!")) return;
 
+      const overlay   = document.getElementById("savingOverlay");
+      const dontouch  = document.getElementById("donottouch");
+      overlay.style.display   = "flex";
+      dontouch.style.display  = "flex";
+
       const memo = state.memos[state.activeMemoIndex];
 
       // 삭제 플래그
@@ -717,6 +735,9 @@
       state.activeMemoIndex = null;
       editorView.style.display = "none";
       renderList();
+
+      overlay.style.display   = "none";
+      dontouch.style.display  = "none";
     };
 
     /* 초기 렌더링 */
@@ -776,8 +797,10 @@
       editorView.style.display = "none";
       renderList();
 
-      const overlay = document.getElementById("savingOverlay");
-      overlay.style.display = "flex";
+      const overlay   = document.getElementById("savingOverlay");
+      const dontouch  = document.getElementById("donottouch");
+      overlay.style.display   = "flex";
+      dontouch.style.display  = "flex";
 
       try {
         const res = await fetch(`${API_BASE}/save`, {
@@ -798,7 +821,8 @@
       } finally {
         playSound(sndMoo);
         console.log(memo);
-        overlay.style.display = "none";
+        overlay.style.display   = "none";
+        dontouch.style.display  = "none";
       }
     }
 
