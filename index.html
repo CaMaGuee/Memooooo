@@ -499,6 +499,31 @@
     });
   </script>
   <script>
+    const sndMoo    = new Audio("mooooo.wav");
+    sndMoo.preload  = "auto";
+
+    /* =========================
+        사운드 재생
+    ========================= */
+    function playSound(audio) {
+        if (!audioUnlocked) return;
+
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    }
+
+    document.addEventListener("pointerdown", () => {
+        if (audioUnlocked) return;
+
+        audioUnlocked = true;
+
+        const silent = new Audio();
+        silent.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+        silent.play().catch(() => {});
+    }, { once: true });
+  </script>
+  <script>
     let autoSaveTimer = null;
 
     const listView = document.getElementById("listView");
@@ -528,6 +553,7 @@
         Editor 열기
     ========================= */
     function openEditor(index) {
+      playSound(sndMoo);
       state.activeMemoIndex = index;
       const memo = state.memos[index];
       editorSubject.value = memo.subject;
@@ -712,7 +738,9 @@
         }
       } catch (err) {
         alert("저장 실패\n" + err.message);
+        return;
       } finally {
+        playSound(sndMoo);
         overlay.style.display = "none";
       }
     }
