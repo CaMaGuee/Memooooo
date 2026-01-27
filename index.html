@@ -264,6 +264,9 @@
 
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
     }
 
     #editorText img,
@@ -317,6 +320,9 @@
     ================================ */
     #savingOverlay {
       display: none;
+      position: fixed;
+      bottom: 0;
+      text-align: center;
       background: rgba(0, 0, 0, .4);
       backdrop-filter: blur(6px);
     }
@@ -521,7 +527,7 @@
   <button id="addBtn">+</button>
 
   <!-- Saving -->
-  <div id="savingOverlay">Saving... </div>
+  <div id="savingOverlay">🐄 Saving... </div>
 
   <script>
     async function hashSHA256(message) {
