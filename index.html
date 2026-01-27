@@ -203,11 +203,13 @@
     ================================ */
     #editorView {
       display: none;
+      position: fixed;
       flex-direction: column;  /* 제목/버튼 + 본문을 세로 배치 */
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: min(720px, 92vw);
+      min-height: 720px;
       max-height: 90vh;
       background: #ffffff;
       border-radius: 5px;
