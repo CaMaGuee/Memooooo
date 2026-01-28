@@ -311,12 +311,8 @@
     }
 
     #deleteMemoBtn {
-      position: fixed;
       z-index: 9999;
-      bottom: 10px;
-      left: 10px;
-
-      align-self: flex-end;
+      align-self: flex-start;
       background: rgba(255, 59, 48, .12);
       border: none;
       font-size: 14px;
@@ -326,11 +322,7 @@
     }
 
     #closeEditor {
-      position: fixed;
       z-index: 9999;
-      bottom: 10px;
-      right: 10px;
-
       align-self: flex-end;
       background: none;
       border: none;
@@ -543,18 +535,20 @@
 
     <!-- Editor -->
     <div id="editorView">
-      <button id="closeEditor">닫기</button>
       <input id="editorSubject" placeholder="🐄 제목 🐄">
 
       <!-- 이미지 버튼 + 삭제 버튼 -->
       <div id="editorButtons">
         <button class="editor-btn" id="uploadImageBtn" style="display:none;">이미지 🐄</button>
         <button class="editor-btn" id="urlImageBtn" style="display:none;">URL 이미지 🐄</button>
-        <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
       </div>
 
       <div id="editorText" contenteditable="true" placeholder="🐄 메모를 입력하세요 (이미지 가능) 🐄"></div>
       <input type="file" id="imageInput" style="display:none" accept="image/*">
+      <div id="editorButtons">
+        <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+        <button id="closeEditor">닫기</button>
+      </div>
     </div>
   </div>
 
