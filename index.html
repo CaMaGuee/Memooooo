@@ -239,7 +239,7 @@
       border-radius: 5px;
       padding: 5px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
-      z-index: 9999;
+      z-index: 99999;
     }
 
     #editorSubject {
@@ -360,9 +360,9 @@
       height: 100vh;
       left:0;
       top:0;
-      background: #00000010;
+      background: #00000015;
       color: #00000000;
-      z-index: 99999;
+      z-index: 9999;
     }
 
     /* ===============================
@@ -665,10 +665,17 @@
     ========================= */
     function openEditor(index) {
       playSound(sndMoo);
+
+      const dontouch  = document.getElementById("donottouch");
+      dontouch.style.display  = "flex";
+
       state.activeMemoIndex = index;
+
       const memo = state.memos[index];
+
       editorSubject.value = memo.subject;
       editorText.innerHTML = memo.text;
+
       editorView.style.display = "block";
     }
 
