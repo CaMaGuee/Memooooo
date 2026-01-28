@@ -23,6 +23,22 @@
       z-index: 999;
       position: relative;
     }
+    
+    /* 전체 화면 로딩 오버레이 */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      z-index: 999999;
+    }
+    
+    /* 스크롤 잠금 */
+    .no-scroll {
+      overflow: hidden;
+      height: 100vh;
+      position: fixed;
+      width: 100%;
+    }
 
     /* ===============================
       Global Reset & iOS Fix
