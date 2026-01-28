@@ -559,6 +559,7 @@
       <input type="file" id="imageInput" style="display:none" accept="image/*">
       <div id="editorButtons">
         <button class="editor-btn" id="deleteMemoBtn">메모 삭제</button>
+        <p id="editorDateString" style="font-size: 14px; color:#00000070;"></p>
         <button id="closeEditor">닫기</button>
       </div>
     </div>
@@ -592,6 +593,7 @@
     const editorView    = document.getElementById("editorView");
     const editorSubject = document.getElementById("editorSubject");
     const editorText    = document.getElementById("editorText");
+    const editorDate    = document.getElementById("editorDateString");
     const imageInput    = document.getElementById("imageInput");
 
 
@@ -675,6 +677,7 @@
 
       editorSubject.value     = memo.subject;
       editorText.innerHTML    = memo.text;
+      editorDate.textContent  = memo.date;
 
       editorView.style.display = "block";
     }
