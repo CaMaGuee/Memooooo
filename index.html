@@ -201,7 +201,8 @@
     /* ===============================
       Floating Add Button
     ================================ */
-    #addBtn {
+    #addBtn,
+    #refreshBtn {
       position: fixed;
       right: 22px;
       bottom: 22px;
@@ -218,7 +219,12 @@
       transition: transform .2s ease;
     }
 
-    #addBtn:hover {
+    #refreshBtn {
+      bottom: 76px;
+    }
+
+    #addBtn:hover,
+    #refreshBtn:hover {
       transform: scale(1.08) rotate(45deg);
     }
 
@@ -577,6 +583,8 @@
   </div>
 
   <button id="addBtn">+</button>
+  <button id="refreshBtn">🗘</button>
+
 
   <!-- Saving -->
   <div id="donottouch"></div>
