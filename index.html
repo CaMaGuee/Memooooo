@@ -209,8 +209,8 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: min(720px, 92vw);
-      min-height: 720px;
-      max-height: 90vh;
+      min-height: 300px;
+      max-height: 70vh;
       background: #ffffff;
       border-radius: 5px;
       padding: 5px;
@@ -223,7 +223,7 @@
         margin-top: 72px;
         width: 98vw;
         height: calc(70vh - 72px); /* 상단 navbar/헤더 제외 */
-        max-height: none;
+        max-height: 70vh;
         border-radius: 0;
         padding-bottom: calc(12px + env(safe-area-inset-bottom));
       }
@@ -245,6 +245,8 @@
     #editorText {
       flex: 1; /* 나머지 공간 채우기 */
       width: 100%;
+      min-height: 300px;
+      max-height: 60vh;
       border: none;
       outline: none;
       font-size: 16px;
