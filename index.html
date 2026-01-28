@@ -583,7 +583,7 @@
   </div>
 
   <button id="addBtn">+</button>
-  <button id="refreshBtn">🗘</button>
+  <button id="refreshBtn">⟳</button>
 
 
   <!-- Saving -->
@@ -870,7 +870,6 @@
       memo.del      = 0;
 
       editorView.style.display = "none";
-      renderList();
 
       const overlay   = document.getElementById("savingOverlay");
       const dontouch  = document.getElementById("donottouch");
@@ -896,6 +895,7 @@
       } finally {
         playSound(sndMoo);
         console.log(memo);
+        refreshMemo();
         overlay.style.display   = "none";
         dontouch.style.display  = "none";
       }
@@ -1013,8 +1013,44 @@
     document.getElementById("closeIosGuide").onclick = () => {
       document.getElementById("iosInstallGuide").style.display = "none";
     };
-
   </script>
+  <script>
+    /* =========================
+        refreshMemo
+    ========================= */
+    let refreshTimer = null;
+
+    function refreshMemo(){
+      loadMemos();
+      renderList();
+    }
+
+    function startAutoRefresh(){
+      if (refreshTimer) clearInterval(refreshTimer);
+
+      refreshTimer = setInterval(() => {
+        if(editorView.style.display !== "none") return;
+
+        if(document.getElementById("savingOverlay").style.display !== "none") return;
+
+        refreshMemo();
+        console.log("🐄 auto refresh");
+      }, 60 * 1000);
+    }
+
+    document.getElementById("refreshBtn").onclick = async () => {
+      refreshMemo();
+    };
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        refreshMemo();
+      }
+    });
+
+    startAutoRefresh();
+  </script>
+
 </body>
 
 </html>
