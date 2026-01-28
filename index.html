@@ -28,7 +28,12 @@
     #loadingOverlay {
       position: fixed;
       inset: 0;
-      background: #ffffff;
+      background-color: #FFFFFF;
+    
+      display: flex;
+      align-items: center;      /* 세로 중앙 */
+      justify-content: center;  /* 가로 중앙 */
+    
       z-index: 999999;
     }
     
@@ -637,6 +642,26 @@
   <div id="donottouch"></div>
   <div id="savingOverlay">&nbsp;&nbsp;🐄 Saving... </div>
 
+  <script>
+    window.addEventListener('load', () => {
+      const overlay = document.getElementById('loadingOverlay');
+      if (!overlay) return;
+    
+      // 스크롤 잠금
+      const scrollY = window.scrollY;
+      document.body.style.top = `-${scrollY}px`;
+      document.body.classList.add('no-scroll');
+    
+      // 500ms 후 로딩 화면 제거 + 스크롤 해제
+      setTimeout(() => {
+        overlay.remove();
+    
+        document.body.classList.remove('no-scroll');
+        document.body.style.top = '';
+        window.scrollTo(0, scrollY);
+      }, 500);
+    });
+  </script>
   <script>
     /* =========================
       State
