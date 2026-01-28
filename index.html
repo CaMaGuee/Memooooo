@@ -600,11 +600,11 @@
   <script>
     async function hashSHA256(message) {
       const encoder = new TextEncoder();
-      const data = encoder.encode(message);
+      const data    = encoder.encode(message);
 
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray
+      const hashBuffer  = await crypto.subtle.digest("SHA-256", data);
+      const hashArray   = Array.from(new Uint8Array(hashBuffer));
+      const hashHex     = hashArray
         .map(b => b.toString(16).padStart(2, "0"))
         .join("");
 
@@ -637,8 +637,8 @@
 
         audioUnlocked = true;
 
-        const silent = new Audio();
-        silent.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+        const silent  = new Audio();
+        silent.src    = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
         silent.play().catch(() => {});
     }, { once: true });
   </script>
@@ -649,7 +649,7 @@
     function renderList() {
       listView.innerHTML = "";
       state.memos.forEach((memo, i) => {
-        const div = document.createElement("div");
+        const div     = document.createElement("div");
         div.className = "memo-card";
         div.innerHTML = `
           <div class="memo-subject">🐄 ${memo.subject}</div>
@@ -666,15 +666,15 @@
     function openEditor(index) {
       playSound(sndMoo);
 
-      const dontouch  = document.getElementById("donottouch");
+      const dontouch          = document.getElementById("donottouch");
       dontouch.style.display  = "flex";
 
-      state.activeMemoIndex = index;
+      state.activeMemoIndex   = index;
 
-      const memo = state.memos[index];
+      const memo              = state.memos[index];
 
-      editorSubject.value = memo.subject;
-      editorText.innerHTML = memo.text;
+      editorSubject.value     = memo.subject;
+      editorText.innerHTML    = memo.text;
 
       editorView.style.display = "block";
     }
@@ -713,10 +713,10 @@
     imageInput.onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
-        const reader = new FileReader();
+        const reader  = new FileReader();
         reader.onload = function (evt) {
           const img = document.createElement("img");
-          img.src = evt.target.result; // Base64
+          img.src   = evt.target.result; // Base64
           editorText.appendChild(img);
         };
         reader.readAsDataURL(file);
@@ -775,12 +775,12 @@
 
       // 로컬 상태 정리
       state.memos.splice(state.activeMemoIndex, 1);
-      state.activeMemoIndex = null;
-      editorView.style.display = "none";
+      state.activeMemoIndex     = null;
+      editorView.style.display  = "none";
       renderList();
 
-      overlay.style.display   = "none";
-      dontouch.style.display  = "none";
+      overlay.style.display     = "none";
+      dontouch.style.display    = "none";
     };
 
     /* 초기 렌더링 */
@@ -795,7 +795,7 @@
     ========================= */
     function handleLogin(res) {
       const payload = JSON.parse(atob(res.credential.split(".")[1]));
-      state.userId = payload.email;
+      state.userId  = payload.email;
 
       document.getElementById("loginView").style.display = "none";
       listView.style.display = "block";
@@ -807,7 +807,7 @@
       Load
     ========================= */
     async function loadMemos() {
-      const dontouch  = document.getElementById("donottouch");
+      const dontouch          = document.getElementById("donottouch");
       dontouch.style.display  = "flex";
 
       try {
@@ -818,7 +818,7 @@
             credentials: "omit"
           }
         );
-        const data = await res.json();
+        const data  = await res.json();
         state.memos = data.Memooooo || [];
         renderList();
       } catch (err) {
@@ -835,12 +835,17 @@
     async function saveAndClose() {
       if (state.activeMemoIndex === null) return;
 
+      const m_date = new Date().toLocaleString('sv-SE', {
+        timeZone: 'Asia/Seoul'
+      });
+
       const memo = state.memos[state.activeMemoIndex];
 
       // 현재 에디터 내용 반영
-      memo.subject = editorSubject.value;
-      memo.text = editorText.innerHTML;
-      memo.del = 0;
+      memo.subject  = editorSubject.value;
+      memo.text     = editorText.innerHTML;
+      memo.date     = m_date;
+      memo.del      = 0;
 
       editorView.style.display = "none";
       renderList();
@@ -883,9 +888,9 @@
 
       const memo = state.memos[state.activeMemoIndex];
 
-      memo.subject = editorSubject.value;
-      memo.text = editorText.innerHTML;
-      memo.del = 0;
+      memo.subject  = editorSubject.value;
+      memo.text     = editorText.innerHTML;
+      memo.del      = 0;
 
       try {
         const res = await fetch(`${API_BASE}/save`, {
