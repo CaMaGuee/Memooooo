@@ -290,36 +290,6 @@
       border-radius: 12px;
     }
 
-    @media (max-width: 600px) {
-      #editorView {
-        top: 55%;
-        width: 80vw;
-        height: calc(60vh - 72px); /* 상단 navbar/헤더 제외 */
-        max-height: 60vh;
-        border-radius: 3;
-        padding-bottom: calc(12px + env(safe-area-inset-bottom));
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      }
-
-      #editorText{
-        min-height: 300px;
-        max-height: 40vh;
-        font-size: 15px;
-        line-height: 1.4;
-
-        -webkit-overflow-scrolling: touch; /* iOS 스무스 스크롤 */
-      }
-
-      #closeEditor {
-        font-size: 14px;
-        padding: 4px 8px;
-        border-radius: 3px;
-        border: 1px solid #ddd;
-        background: #f8f8f8;
-        cursor: pointer;
-      }
-    }
-
     /* ===============================
       Buttons (iOS Style)
     ================================ */
@@ -361,6 +331,36 @@
       color: #111;
     }
 
+    @media (max-width: 600px) {
+      #editorView {
+        top: 55%;
+        width: 80vw;
+        height: calc(60vh - 72px); /* 상단 navbar/헤더 제외 */
+        max-height: 60vh;
+        border-radius: 3;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      #editorText{
+        min-height: 300px;
+        max-height: 40vh;
+        font-size: 15px;
+        line-height: 1.4;
+
+        -webkit-overflow-scrolling: touch; /* iOS 스무스 스크롤 */
+      }
+
+      #closeEditor {
+        font-size: 14px;
+        padding: 4px 8px;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        background: #f8f8f8;
+        cursor: pointer;
+      }
+    }
+    
     /* ===============================
       Saving Overlay
     ================================ */
