@@ -278,11 +278,11 @@
 
     @media (max-width: 600px) {
       #editorView {
-        top: 40%;
+        top: 50%;
         width: 80vw;
         height: calc(60vh - 72px); /* 상단 navbar/헤더 제외 */
         max-height: 60vh;
-        border-radius: 0;
+        border-radius: 3;
         padding-bottom: calc(12px + env(safe-area-inset-bottom));
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       }
@@ -362,7 +362,7 @@
       top:0;
       background: #00000030;
       color: #00000000;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(3px);
       
       z-index: 9999;
     }
@@ -571,7 +571,7 @@
 
   <!-- Saving -->
   <div id="donottouch"></div>
-  <div id="savingOverlay">🐄 Saving... </div>
+  <div id="savingOverlay">&nbsp;&nbsp;🐄 Saving... </div>
 
   <script>
     /* =========================
