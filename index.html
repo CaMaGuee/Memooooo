@@ -369,7 +369,8 @@
       position: fixed;
       width: 100%;
       bottom: 0;
-      text-align: center;
+      justify-content: center;
+      align-items: center;
       background: #00000010;
       backdrop-filter: blur(6px);
 
@@ -877,8 +878,6 @@
       memo.date     = m_date;
       memo.del      = 0;
 
-      editorView.style.display = "none";
-
       const overlay   = document.getElementById("savingOverlay");
       const dontouch  = document.getElementById("donottouch");
       overlay.style.display   = "flex";
@@ -897,15 +896,16 @@
         if (!res.ok) {
           throw new Error(await res.text());
         } else {
+          editorView.style.display = "none";
           playSound(sndMoo);
           refreshMemo();
-        overlay.style.display   = "none";
-        dontouch.style.display  = "none";
         }
       } catch (err) {
         alert("저장 실패\n" + err.message);
       } finally {
         console.log(memo);
+        overlay.style.display   = "none";
+        dontouch.style.display  = "none";
       }
     }
 
