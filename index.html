@@ -276,7 +276,7 @@
       font-size: 16px;
       line-height: 1.6;
       padding: 8px 6px;
-      margin-bottom: 30px;
+      margin-bottom: 50px;
 
       overflow-y: auto; /* 세로 스크롤 활성화 */
       -webkit-overflow-scrolling: touch; /* iOS 스무스 스크롤 */
@@ -300,10 +300,11 @@
     }
     
     .editor-btn,
-    #deleteMemoBtn {
+    #deleteMemoBtn,
+    #closeEditor {
       font-size: 14px;
-      padding: 6px 10px;
-      border-radius: 10px;
+      padding: 4px 8px;
+      border-radius: 3px;
       border: 1px solid #ddd;
       background: #f8f8f8;
       cursor: pointer;
@@ -312,8 +313,8 @@
     #deleteMemoBtn {
       position: fixed;
       z-index: 9999;
-      bottom: 20px;
-      left: 20px;
+      bottom: 10px;
+      left: 10px;
 
       align-self: flex-end;
       background: rgba(255, 59, 48, .12);
@@ -327,16 +328,13 @@
     #closeEditor {
       position: fixed;
       z-index: 9999;
-      bottom: 20px;
-      right: 20px;
+      bottom: 10px;
+      right: 10px;
 
       align-self: flex-end;
       background: none;
       border: none;
-      font-size: 14px;
       color: #111;
-      padding: 4px 8px;
-      cursor: pointer;
     }
 
     /* ===============================
