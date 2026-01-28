@@ -20,7 +20,7 @@
       width: 100%;
       height: 50px;
       background-color: #ccc;
-      z-index: 999;
+      z-index: 99999;
       position: relative;
     }
     
@@ -444,7 +444,7 @@
     }
 
     #donottouch {
-      display: none;
+      display: flex;
       position: fixed;
       width: 100%;
       height: 100vh;
@@ -915,6 +915,10 @@
     function handleLogin(res) {
       const payload = JSON.parse(atob(res.credential.split(".")[1]));
       state.userId  = payload.email;
+
+      const dontouch  = document.getElementById("donottouch");
+      dontouch.style.display  = "none";
+
 
       document.getElementById("loginView").style.display = "none";
       listView.style.display = "block";
