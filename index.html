@@ -683,7 +683,10 @@
         새 메모 생성
     ========================= */
     document.getElementById("addBtn").onclick = async () => {
-      const m_date = new Date().toISOString();
+      //const m_date = new Date().toISOString();
+      const m_date = new Date().toLocaleString('sv-SE', {
+        timeZone: 'Asia/Seoul'
+      });
       const m_hash = await hashSHA256(m_date);
 
       state.memos.unshift({
