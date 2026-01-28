@@ -197,6 +197,26 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+    
+    @media (max-width: 600px) {
+      #listView {
+        column-count: 2;
+        column-gap: 10px;
+      }
+
+      .memo-card {
+        break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .memo-text img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+    }
 
     /* ===============================
       Floating Add Button
