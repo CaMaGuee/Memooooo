@@ -941,9 +941,14 @@
             credentials: "omit"
           }
         );
-        const data  = await res.json();
-        state.memos = data.Memooooo || [];
-        renderList();
+
+        if (!res.ok) {
+          throw new Error(await res.text());
+        } else {
+          const data  = await res.json();
+          state.memos = data.Memooooo || [];
+          renderList();
+        }
       } catch (err) {
         console.error("로드 실패:", err);
         alert("메모를 불러오지 못했습니다.");
@@ -990,7 +995,7 @@
         } else {
           editorView.style.display = "none";
           playSound(sndMoo);
-          refreshMemo();
+          loadMemos();
         }
       } catch (err) {
         alert("저장 실패\n" + err.message);
@@ -1116,14 +1121,9 @@
   </script>
   <script>
     /* =========================
-        refreshMemo
+        refreshTimer
     ========================= */
     let refreshTimer = null;
-
-    function refreshMemo(){
-      loadMemos();
-      renderList();
-    }
 
     function startAutoRefresh(){
       if (refreshTimer) clearInterval(refreshTimer);
@@ -1133,18 +1133,18 @@
 
         if(document.getElementById("savingOverlay").style.display !== "none") return;
 
-        refreshMemo();
+        loadMemos();
         console.log("🐄 auto refresh");
       }, 60 * 1000);
     }
 
     document.getElementById("refreshBtn").onclick = async () => {
-      refreshMemo();
+      loadMemos();
     };
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
-        refreshMemo();
+        loadMemos();
       }
     });
 
